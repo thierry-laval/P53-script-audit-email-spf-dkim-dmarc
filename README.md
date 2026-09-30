@@ -1,36 +1,24 @@
-# ![left 100%](https://raw.githubusercontent.com/thierry-laval/archives/master/images/logo-portfolio.png)
+# ![left 100%](https://raw.githubusercontent.com/thierry-laval/archives/master/images/logo-portfolio.png "Logo Thierry Laval")
 
 ## Auteur
 
-👤 **Thierry LAVAL** [🇫🇷 Contactez moi 🇬🇧](<contact@thierrylaval.dev>)
+👤 **Thierry LAVAL** — [Contact](mailto:contact@thierrylaval.dev)
 
-* Github: [@Thierry Laval](https://github.com/thierry-laval)
-* LinkedIn: [@Thierry Laval](https://www.linkedin.com/in/thierry-laval)
+* Github : [@Thierry Laval](https://github.com/thierry-laval)
+* LinkedIn : [Thierry Laval](https://www.linkedin.com/in/thierry-laval)
+* Site Web : https://thierrylaval.dev
 
-***
+---
 
-### 📎 Outil de Vérification E-mail & DNS — Fichier Unique Autonome
+## 📎 Projet
 
-_`Début du projet le 30/09/2025`_
+Outil de Vérification E-mail & DNS — Fichier Unique Autonome
 
-<br />
-<p align="center">
-  <h3 align="center">Audit complet de la configuration e-mail, de la délivrabilité et de la sécurité DNS d'un domaine</h3>
-  <p align="center">
-    Un outil PHP + HTML autonome, sans dépendance, tout-en-un à déposer à la racine de votre hébergement.
-    <br />
-    <a href="https://github.com/thierry-laval/P53-script-audit-email-spf-dkim-dmarc"><strong>>> Explorer les documents <<</strong></a>
-    <br />
-    <br />
-    <a href="https://thierrylaval.dev">Voir le site</a>
-    ·
-    <a href="https://github.com/thierry-laval/P53-script-audit-email-spf-dkim-dmarc/issues">Rapport de Bug</a>
-    ·
-    <a href="https://github.com/thierry-laval/P53-script-audit-email-spf-dkim-dmarc/issues/new">Demande de fonctionnalité</a>
-  </p>
-</p>
+_`Début du projet le 30/09/2025`_ — Version du script : 1.0.0 (25/09/2026)
 
-***
+![Outil de Vérification E-mail & DNS](img/outil-vérification-email.jpg)
+
+---
 
 <!-- TABLE DES MATIÈRES -->
 <details open="open">
@@ -79,7 +67,6 @@ _`Début du projet le 30/09/2025`_
 
 ***
 
-<!-- A PROPOS DU PROJET -->
 ## À propos du projet
 
 Cet outil analyse en profondeur la configuration e-mail publique, la réputation et la sécurité DNS d'un nom de domaine **sans envoyer le moindre e-mail** et **sans stocker aucune donnée**.
@@ -276,9 +263,8 @@ Ce fichier est **100% autonome**. Il assure l'ensemble du cycle de vie de l'appl
 - **MTA-STS** : Vérifie l'enregistrement DNS `_mta-sts` et télécharge le fichier HTTPS `https://mta-sts.domaine.com/.well-known/mta-sts.txt` (analyse du mode `enforce`/`testing`, du `max_age` et de la concordance des MX).
 - **TLS-RPT** : Vérifie l'enregistrement `_smtp._tls.domaine.com` et l'adresse de réception des rapports d'échec de chiffrement (`rua=`).
 
-***
+---
 
-<!-- NOUVELLES FONCTIONNALITÉS -->
 ## Nouvelles fonctionnalités
 
 - **Fichier 100% autonome** : aucune dépendance, aucune bibliothèque externe à installer via Composer.
@@ -286,9 +272,8 @@ Ce fichier est **100% autonome**. Il assure l'ensemble du cycle de vie de l'appl
 - **Support des paramètres d'URL** : pré-remplissage et analyse instantanée via les liens directs.
 - **Arborescence graphique du SPF** : visualisation pas à pas de chaque `include:` et du nombre exact de requêtes DNS consommées.
 
-***
+---
 
-<!-- UTILISATION -->
 ## Utilisation
 
 ### Lancement automatique via URL
@@ -312,9 +297,8 @@ Cliquez sur le bouton **🖨️ Imprimer / Exporter en PDF** situé dans le band
 - **Mise en page A4 soignée** : en-tête avec domaine, date et horodatage de l'analyse, compteurs d'erreurs et score de sécurité.
 - **Détails techniques complets** : tous les détails et les enregistrements DNS bruts sont automatiquement dépliés pour figurer dans le PDF.
 
-***
+---
 
-<!-- SCORE -->
 ## Score de sécurité
 
 Score global calculé sur **100 points** :
@@ -337,9 +321,8 @@ Score global calculé sur **100 points** :
 - **50 – 74** : ⚠️ Passable, des améliorations importantes sont recommandées
 - **0 – 49** : ❌ Configuration critique ou vulnérable
 
-***
+---
 
-<!-- SÉCURITÉ -->
 ## Sécurité intégrée
 
 - **Jeton anti-CSRF** — session PHP avec token de validation pour empêcher les soumissions non autorisées
@@ -348,9 +331,8 @@ Score global calculé sur **100 points** :
 - **Zéro stockage** — aucune donnée personnelle enregistrée, aucun fichier de log créé sur le serveur
 - **Zéro abonnement externe** — utilise uniquement le DNS système local et Google DoH gratuit
 
-***
+---
 
-<!-- COMPATIBILITÉ -->
 ## Compatibilité
 
 | Composant | Version supportée |
@@ -360,9 +342,8 @@ Score global calculé sur **100 points** :
 | Hébergements | o2switch, OVHcloud, cPanel, Plesk, Cloudways, Infomaniak, VPS, etc. |
 | Navigateurs | Chrome, Firefox, Safari, Edge, navigateurs mobiles |
 
-***
+---
 
-<!-- STRUCTURE JSON -->
 ## Structure du JSON retourné
 
 Lors d'un appel API (POST/AJAX), le script retourne un objet JSON complet :
@@ -389,9 +370,8 @@ Lors d'un appel API (POST/AJAX), le script retourne un objet JSON complet :
 }
 ```
 
-***
+---
 
-<!-- GLOSSAIRE -->
 ## Glossaire technique
 
 | Terme | Définition |
@@ -411,18 +391,16 @@ Lors d'un appel API (POST/AJAX), le script retourne un objet JSON complet :
 | **MTA-STS** | Forçage du chiffrement TLS entre serveurs de messagerie |
 | **TLS-RPT** | Rapports quotidiens sur la qualité des connexions sécurisées TLS |
 
-***
+---
 
-<!-- LIMITES -->
 ## Limites connues
 
 1. **Découverte DKIM** : Le DNS ne permet pas d'énumérer les sélecteurs existants. L'outil teste 18 sélecteurs fréquents ; pour un sélecteur propriétaire, renseignez-le dans le champ optionnel.
 2. **Listes RBL** : Les RBL sont testées sur les adresses IP de vos serveurs MX de réception. Si vos envois transitent par un relais SMTP tiers (ex: Brevo, SendGrid), surveillez l'IP d'envoi assignée par ce tiers.
 3. **Propagation DNS** : Une mise à jour de vos zones DNS peut nécessiter quelques minutes à plusieurs heures selon la valeur TTL configurée.
 
-***
+---
 
-<!-- FEUILLE DE ROUTE -->
 ## Feuille de route
 
 - [x] MX + Reverse DNS (PTR) + FCrDNS
@@ -442,7 +420,7 @@ Lors d'un appel API (POST/AJAX), le script retourne un objet JSON complet :
 - [x] Regroupement autonome en un fichier PHP unique à déposer à la racine
 - [ ] Historique des derniers audits (localStorage)
 
-***
+---
 
 ### Utilisé dans ce projet
 
@@ -452,22 +430,32 @@ Lors d'un appel API (POST/AJAX), le script retourne un objet JSON complet :
 | JavaScript Vanilla | Serveur Web (Apache / Nginx / LiteSpeed) |
 | CSS3 (responsive + print) | Git / GitHub |
 
-***N'hésitez pas à contribuer, en ouvrant une issue.***
-
 #### Merci à tous
 
-***
+---
+
+## Contribution
+
+***N'hésitez pas à contribuer, en ouvrant une issue.***
+
+* Fork → nouvelle branche → commit → pull request.  
+* Respectez les bonnes pratiques, tests et sécurité (ne pas committer les credentials).
+
+---
 
 #### 📝 &nbsp; Licence
 
 [Licence libre académique 3.0 (AFL-3.0)](https://github.com/thierry-laval/P53-script-audit-email-spf-dkim-dmarc/blob/main/LICENSE)
 
 ### Avis d'attribution
+
 **Outil de Vérification E-mail & Sécurité DNS** a été créé par **Thierry Laval** : [thierrylaval.dev](https://thierrylaval.dev/).  
 Projet original : [github.com/thierry-laval/P53-script-audit-email-spf-dkim-dmarc](https://github.com/thierry-laval/P53-script-audit-email-spf-dkim-dmarc).  
 Soutien : [paypal.me/thierrylaval01](https://paypal.me/thierrylaval01?country.x=FR&locale.x=fr_FR).  
 
 Toute œuvre dérivée doit conserver cette mention, le nom de l'auteur et les liens ci-dessus.
+
+Copyright © 2026 Thierry Laval — https://thierrylaval.dev
 
 #### 💙 Soutien
 
@@ -477,15 +465,16 @@ Si vous appréciez ce projet, vous pouvez me soutenir :
 
 [Voir mon travail](https://github.com/thierry-laval)
 
-***
+---
 
-### &hearts;&nbsp;&nbsp;&nbsp;&nbsp;Love Markdown
+#### ♥ Love Markdown
 
-Donnez une ⭐️ &nbsp;si ce projet vous plaît !
+Donnez une ⭐️  &nbsp;si ce projet vous plaît !
 
-<p align="center">
+<span style="font-family:Papyrus; font-size:4em;">FAN DE GITHUB !</span>
+
+<p>
   <img src="https://raw.githubusercontent.com/thierry-laval/P00-mes-archives/master/images/octocat-oley.png" height="300" alt="Octocat">
 </p>
 
-**[⬆ Retour en haut](#auteur)** <br>
-
+**[⬆ Retour en haut](#auteur)**
