@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# IDE & Editeurs
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Fichiers temporaires et logs
+*.log
+*.tmp
+*.bak
+*~
