@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * Script Name:       Outil de Vérification E-mail & Sécurité DNS
  * Script URI:        https://thierrylaval.dev
- * Description:       Audit complet et autonome de la configuration e-mail, de la délivrabilité et de la sécurité DNS d'un nom de domaine (MX, SPF, DKIM, DMARC, RBL, DNSSEC, BIMI, DANE, MTA-STS, TLS-RPT).
+ * Description:       Audit complet et autonome de la configuration DNS et de la sécurité e-mail d'un nom de domaine (MX, SPF, DKIM, DMARC, RBL, DNSSEC, BIMI, DANE, MTA-STS, TLS-RPT), sans test d'envoi réel.
  * Version:           1.0.0
  * Author:            Thierry Laval
  * Author URI:        https://thierrylaval.dev
@@ -33,7 +33,7 @@ declare(strict_types=1);
  * - DANE / TLSA (port 25)
  * - MTA-STS (DNS + validation du fichier HTTPS .well-known/mta-sts.txt)
  * - TLS-RPT (DNS + balise rua=)
- * - Score de sécurité email sur 100 points
+ * - Indicateur de configuration et de sécurité e-mail sur 100 points (pas un score de délivrabilité)
  * - Export PDF isolé et autonome (aucun élément parasite)
  * - Lancement automatique via paramètres URL (?domain=...)
  */
@@ -1869,7 +1869,8 @@ function checkBimi(string $domain, array $dmarcResult): array
 
 
 /**
- * Vérifie la réputation des serveurs MX sur les principales listes noires (RBL / DNSBL).
+ * Vérifie les adresses IPv4 associées aux serveurs MX sur plusieurs listes RBL / DNSBL.
+ * Ce contrôle porte sur les IP de réception résolues, pas sur les IP d'envoi réellement utilisées.
  *
  * Les Real-time Blackhole Lists (RBL) sont des bases de données réputées qui répertorient
  * les adresses IP identifiées comme émettrices de spam ou compromises.
@@ -1918,8 +1919,8 @@ function checkRbl(array $mxServers): array
     if (empty($ipList)) {
         return [
             'status'        => 'info',
-            'title'         => 'Listes Noires (RBL)',
-            'message'       => 'Aucune adresse IPv4 de serveur MX disponible pour tester la réputation.',
+            'title'         => 'RBL des IP MX',
+            'message'       => 'Aucune adresse IPv4 des serveurs MX n’a pu être testée sur les listes RBL. Ce contrôle ne renseigne pas sur les IP d’envoi.',
             'record'        => '',
             'suggested_dns' => null,
             'details'       => [
@@ -1969,8 +1970,8 @@ function checkRbl(array $mxServers): array
         }
         return [
             'status'        => 'error',
-            'title'         => 'Listes Noires (RBL)',
-            'message'       => 'Alerte réputation : ' . implode(' ', $warnings) . ' Vos emails risquent d’être refusés ou classés en spam.',
+            'title'         => 'RBL des IP MX',
+            'message'       => 'Une ou plusieurs IP de réception associées aux MX figurent sur une liste RBL : ' . implode(' ', $warnings) . ' Ce résultat ne permet pas de conclure sur la réputation des IP d’envoi réellement utilisées.',
             'record'        => implode(', ', array_unique(array_column($listedResults, 'ip'))),
             'suggested_dns' => null,
             'details'       => [
@@ -1983,8 +1984,8 @@ function checkRbl(array $mxServers): array
 
     return [
         'status'        => 'ok',
-        'title'         => 'Listes Noires (RBL)',
-        'message'       => 'Excellente réputation : vos serveurs MX ne figurent sur aucune des listes noires testées (' . implode(', ', array_keys($rbls)) . ').',
+        'title'         => 'RBL des IP MX',
+        'message'       => 'Aucune des IP MX testées ne figure sur les listes RBL consultées (' . implode(', ', array_keys($rbls)) . '). Ce résultat ne renseigne pas sur les IP d’envoi réellement utilisées.',
         'record'        => implode(', ', $ipList),
         'suggested_dns' => null,
         'details'       => [
@@ -2133,14 +2134,15 @@ function checkDane(array $mxServers): array
 
 
 /**
- * Calcule le score de sécurité e-mail global sur 100 points.
+ * Calcule un indicateur de configuration et de sécurité e-mail sur 100 points.
+ * Ce score ne mesure pas la délivrabilité et inclut 10 points liés aux RBL des IP MX testées.
  *
  * Barème équilibré sur 100 points :
  *   MX & Reverse DNS : ok=20, warning=10, error=0  (réception + PTR/FCrDNS)
  *   SPF              : ok=20, warning=10, error=0  (autorisation des expéditeurs)
  *   DKIM             : ok=20, warning=10, error=0  (signature cryptographique)
  *   DMARC            : reject=20, quarantine=16, none=10, warning=8, error=0 (politique anti-usurpation)
- *   Listes Noires RBL: ok=10, error=0              (réputation anti-spam des IPs)
+ *   Listes Noires RBL: ok=10, error=0              (résultat des IP MX testées, pas des IP d'envoi)
  *   DNSSEC           : ok=5                        (sécurité de la zone DNS)
  *   MTA-STS ou DANE  : ok=5                        (chiffrement garanti inter-serveurs)
  *
@@ -2188,7 +2190,7 @@ function calculateScore(array $results): int
         $score += 8;
     }
 
-    // Listes Noires / RBL (10 pts max) : réputation des IPs des serveurs MX.
+    // Listes RBL (10 pts max) : résultat des IP MX testées, sans mesure des IP d'envoi.
     if (isset($results['rbl']) && $results['rbl']['status'] === 'ok') {
         $score += 10;
     }
@@ -2331,7 +2333,7 @@ if ($isPost) {
 <div class="dmc-standalone-wrapper">
     <div class="dmc-standalone-brand">
         <h1>🛡️ Audit de Sécurité E-mail & DNS</h1>
-        <p>Vérifiez la configuration, la délivrabilité et la conformité DNS de votre nom de domaine.</p>
+        <p>Vérifiez la configuration DNS et les principaux mécanismes de sécurité e-mail de votre domaine.</p>
     </div>
 <div id="dns-mail-checker">
 
@@ -2345,9 +2347,8 @@ if ($isPost) {
         <div class="dmc-intro">
             <strong>À quoi sert ce test ?</strong>
             <p>
-                Lorsque vous envoyez un email, plusieurs mécanismes permettent
-                de vérifier que le message vient bien de votre domaine et
-                d'améliorer sa délivrabilité.
+                Lorsque vous envoyez un email, plusieurs réglages DNS contribuent
+                à authentifier les messages envoyés au nom de votre domaine.
             </p>
             <p>
                 Ce test lit uniquement les informations DNS publiques de votre
@@ -3657,12 +3658,12 @@ if ($isPost) {
             },
 
             rbl: {
-                importance: 'Indispensable',
+                importance: 'Complémentaire',
                 title: 'À quoi servent les Listes Noires (RBL) ?',
                 text:
-                    'Les RBL (Real-time Blackhole Lists) surveillent en temps réel les serveurs de messagerie émetteurs de spam ou compromis par des logiciels malveillants.',
+                    'Ce test consulte quelques listes RBL pour les adresses IPv4 associées aux serveurs MX de votre domaine. Il porte donc sur des IP de réception, pas sur les IP d’envoi utilisées pour vos messages.',
                 why:
-                    'Si l’adresse IP de votre serveur de messagerie est inscrite sur une liste noire, vos emails légitimes seront systématiquement refusés ou dirigés vers le dossier spam par Gmail, Outlook et Yahoo.'
+                    'Le résultat renseigne uniquement sur les IP MX testées. Il ne permet pas de connaître la réputation des IP d’envoi ni de prédire le classement de vos messages.'
             },
 
             dnssec: {
@@ -3765,13 +3766,13 @@ if ($isPost) {
 
             rbl: {
                 ok:
-                    'Excellente réputation : l’adresse IP de vos serveurs de messagerie est saine et ne figure sur aucune des listes noires réputées testées.',
+                    'Aucune des adresses IPv4 MX testées ne figure sur les listes RBL consultées. Cela ne renseigne pas sur les IP d’envoi.',
                 warning:
-                    'Attention : une ou plusieurs adresses IP de vos serveurs de messagerie apparaissent sur une liste noire anti-spam.',
+                    'Une ou plusieurs adresses IPv4 associées aux MX figurent sur une liste RBL. Le résultat concerne ces IP de réception uniquement.',
                 error:
-                    'Alerte réputation : vos serveurs de messagerie sont répertoriés sur une liste noire. Vos emails risquent fortement d’être rejetés ou mis en spam.',
+                    'Une ou plusieurs adresses IPv4 MX testées sont répertoriées sur une liste RBL. Ce contrôle ne permet pas de conclure sur les IP d’envoi réellement utilisées.',
                 info:
-                    'Aucune adresse IP de serveur de messagerie n’a pu être testée.'
+                    'Aucune adresse IPv4 associée aux MX n’a pu être testée sur les listes RBL.'
             },
 
             dnssec: {
@@ -3843,7 +3844,7 @@ if ($isPost) {
                 'Si vous souhaitez afficher votre logo dans Gmail et Yahoo, publiez un enregistrement default._bimi avec votre logo au format SVG Tiny P.S. et assurez-vous que DMARC est au minimum en p=quarantine (pct=100) ou p=reject.',
 
             rbl:
-                'Contactez votre hébergeur ou prestataire de messagerie pour demander le délistage de votre adresse IP ou pour qu’une nouvelle adresse IP saine vous soit attribuée.',
+                'Vérifiez auprès du fournisseur du serveur MX concerné si l’inscription de cette IP de réception nécessite une action. Ce résultat ne teste pas la réputation des IP d’envoi.',
 
             dnssec:
                 'Activez DNSSEC depuis l’espace client de votre bureau d’enregistrement de domaine (Registrar) pour sécuriser l’authenticité de votre zone DNS.',
@@ -4904,7 +4905,7 @@ if ($isPost) {
                     html +=
                         '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:10px;">' +
                         '<div class="dmc-summary-score" style="margin-top:0;">' +
-                        'Score de sécurité email : ' +
+                        'Score de configuration e-mail : ' +
                         escapeHtml(result.score) + ' / 100' +
                         '</div>' +
                         '<button type="button" class="dmc-btn-print" onclick="dmcPrintReport()">' +
